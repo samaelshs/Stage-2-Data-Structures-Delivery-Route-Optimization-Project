@@ -210,4 +210,62 @@ public class RouteOptimizerTester {
             }
         }
     }
+// Add this method inside your main class
+private static void populateRandomCity() {
+    System.out.print("Enter number of nodes to generate (e.g., 20): ");
+    int size = getIntInput();
+    
+    Random rand = new Random();
+    int edgesCount = 0;
+    
+    // 1. Clear existing data (Optional: remove this if you want to add to existing map)
+    city = new CityGraph();
+    spatialIndex = new SpatialIndex();
+    driver = new CourierDriver(1, 100.0, new Coordinate(0,0));
+    
+    System.out.println("Generating " + size + " random locations...");
+    
+    try {
+        // 2. Generate Nodes
+        for (int i = 0; i < size; i++) {
+            double x = rand.nextDouble() * 100; // Map size 100x100
+            double y = rand.nextDouble() * 100;
+            try {
+                city.addNode(i, new Coordinate(x, y));
+            } catch (RouteException ignored) {} 
+        }
+
+        // 3. Generate Edges (Connect them randomly)
+        // Try to connect each node to 2-3 other nodes on average
+        for (int i = 0; i < size; i++) {
+            int connections = rand.nextInt(3) + 1; // 1 to 3 roads per node
+            for (int k = 0; k < connections; k++) {
+                int target = rand.nextInt(size);
+                if (i != target) {
+                    double dist = rand.nextDouble() * 15 + 1; // 1km to 16km
+                    double speed = rand.nextDouble() * 60 + 30; // 30km/h to 90km/h
+                    try {
+                        city.addEdge(i, target, dist, speed);
+                        edgesCount++;
+                    } catch (RouteException ignored) {}
+                }
+            }
+        }
+
+        // 4. Generate Random Tasks
+        int tasksCount = size / 2; // Create half as many tasks as nodes
+        for (int i = 0; i < tasksCount; i++) {
+            double tx = rand.nextDouble() * 100;
+            double ty = rand.nextDouble() * 100;
+            double load = rand.nextDouble() * 15 + 1; // 1kg to 16kg
+            spatialIndex.insertTask(new DeliveryTask(1000 + i, new Coordinate(tx, ty), 9, 17, load, 1));
+        }
+
+        System.out.println("Success! Created city with " + size + " nodes, " + edgesCount + " edges, and " + tasksCount + " tasks.");
+
+    } catch (Exception e) {
+        System.out.println("Error generating data: " + e.getMessage());
+    }
+}
+    
 }
