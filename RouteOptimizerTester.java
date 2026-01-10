@@ -3,8 +3,7 @@ import java.util.List;
 import java.util.InputMismatchException;
 import java.util.Random;
 
-// [cite: 223] "A Tester Class... This will contains the main() method"
-public class RouteOptimizerTester {
+public class RouteOptimizerApp {
 
     private static Scanner scanner = new Scanner(System.in);
 
@@ -13,12 +12,9 @@ public class RouteOptimizerTester {
     private static SpatialADT spatialIndex = new SpatialIndex();
     private static DriverADT driver = new CourierDriver(1, 100.0, new Coordinate(0,0));
 
-    // [cite: 226] "main() method"
     public static void main(String[] args) {
         System.out.println("=== CCS2110 Coursework: Courier Delivery Route Optimizer ===");
-
-        // Safety Check: Print this to prove you are running the new code
-        System.out.println("!!! SYSTEM READY: MENU LOADED !!!");
+        System.out.println("!!! I AM THE NEW VERSION WITH MAP VIEW !!!");
 
         boolean running = true;
         while (running) {
@@ -32,9 +28,7 @@ public class RouteOptimizerTester {
 
             switch (choice) {
                 case 1:
-                    // [cite: 142] "main() method should contain adequate hardcoded initializations"
                     runHardcodedScenario();
-                    // [cite: 229] "measure the time each run takes"
                     measureDijkstraPerformance();
                     System.out.println("\n[Info] Assessment Demo Complete. Returning to menu...");
                     break;
@@ -64,13 +58,11 @@ public class RouteOptimizerTester {
             demoCity.addEdge(1, 2, 3.0, 40.0);
             demoCity.addEdge(0, 2, 8.0, 60.0);
 
-            // [cite: 147] "Most Significant Operation" (Dijkstra)
             System.out.println("Calculating shortest time from Depot(0) to East(2)...");
             double time = demoCity.getShortestTime(0, 2);
             System.out.printf("Shortest Time: %.4f hours%n", time);
 
             SpatialADT demoSpatial = new SpatialIndex();
-            // [cite: 142] "showcasing the ADTs"
             demoSpatial.insertTask(new DeliveryTask(101, new Coordinate(1.9, 5.1), 9, 12, 10, 1));
 
         } catch (Exception e) {
@@ -81,24 +73,22 @@ public class RouteOptimizerTester {
     // --- 2. PERFORMANCE MEASUREMENT (Assessment Requirement) ---
     private static void measureDijkstraPerformance() {
         System.out.println("\n[System] Measuring Algorithm Performance...");
-        // [cite: 229] "test this operation with 3 different data sets of different sizes"
         int[] dataSizes = {100, 1000, 5000};
         Random rand = new Random();
 
         for (int size : dataSizes) {
             CityGraph testGraph = new CityGraph();
             try {
-                // [cite: 230] "You can use an AI tool to generate these data sets" (Simulated here with Random)
                 for (int i = 0; i < size; i++) {
                     try { testGraph.addNode(i, new Coordinate(rand.nextDouble() * 100, rand.nextDouble() * 100)); }
-                    catch (Exception ignored) {}
+                    catch (RouteException ignored) {}
                 }
                 for (int i = 0; i < size; i++) {
                     int u = rand.nextInt(size);
                     int v = rand.nextInt(size);
                     if (u != v) {
                         try { testGraph.addEdge(u, v, rand.nextDouble() * 10 + 1, 50.0); }
-                        catch (Exception ignored) {}
+                        catch (RouteException ignored) {}
                     }
                 }
 
@@ -114,7 +104,7 @@ public class RouteOptimizerTester {
         }
     }
 
-    // --- 3. INTERACTIVE MODE (Your Custom Feature) ---
+    // --- 3. INTERACTIVE MODE ---
     private static void runInteractiveMode() {
         boolean inMenu = true;
         while (inMenu) {
@@ -124,7 +114,9 @@ public class RouteOptimizerTester {
             System.out.println("3. Create Delivery Task");
             System.out.println("4. Assign Tasks (Spatial Search)");
             System.out.println("5. Calculate Path (Dijkstra)");
-            System.out.println("6. Return to Main Menu");
+            System.out.println("6. VIEW MAP STATUS");
+            System.out.println("7. POPULATE RANDOM DATA"); // <--- NEW OPTION
+            System.out.println("8. Return to Main Menu");
             System.out.print("Select action: ");
 
             int choice = getIntInput();
@@ -162,7 +154,7 @@ public class RouteOptimizerTester {
                         System.out.println("Found " + tasks.size() + " tasks.");
                         for (TaskADT t : tasks) {
                             try { driver.assignTask(t); System.out.println("Assigned Task " + t.getId()); }
-                            catch (Exception e) { System.out.println("Skipped Task " + t.getId() + ": " + e.getMessage()); }
+                            catch (RouteException e) { System.out.println("Skipped Task " + t.getId() + ": " + e.getMessage()); }
                         }
                         driver.printRoute();
                         break;
@@ -174,13 +166,22 @@ public class RouteOptimizerTester {
                         else System.out.printf("Travel Time: %.4f hours%n", result);
                         break;
                     case 6:
+                        // Call the new method we just made
+                        city.printGraphStatus();
+                        break;
+
+                    case 7:
+                        RouteOptimizerTester.populateRandomCity();
+                        break;
+
+                    case 8: // Changed from 7
                         inMenu = false;
                         break;
+
                     default:
                         System.out.println("Unknown command.");
                 }
             } catch (Exception e) {
-                // Catches RouteException and any other issues
                 System.out.println("Error: " + e.getMessage());
             }
         }
@@ -194,6 +195,7 @@ public class RouteOptimizerTester {
                 scanner.next();
                 System.out.print("Invalid integer. Try again: ");
             } catch (Exception e) {
+                // Catches stream errors if run in non-interactive environments
                 System.out.println("Input stream error. Exiting.");
                 System.exit(1);
                 return -1;
@@ -210,62 +212,4 @@ public class RouteOptimizerTester {
             }
         }
     }
-// Add this method inside your main class
-private static void populateRandomCity() {
-    System.out.print("Enter number of nodes to generate (e.g., 20): ");
-    int size = getIntInput();
-    
-    Random rand = new Random();
-    int edgesCount = 0;
-    
-    // 1. Clear existing data (Optional: remove this if you want to add to existing map)
-    city = new CityGraph();
-    spatialIndex = new SpatialIndex();
-    driver = new CourierDriver(1, 100.0, new Coordinate(0,0));
-    
-    System.out.println("Generating " + size + " random locations...");
-    
-    try {
-        // 2. Generate Nodes
-        for (int i = 0; i < size; i++) {
-            double x = rand.nextDouble() * 100; // Map size 100x100
-            double y = rand.nextDouble() * 100;
-            try {
-                city.addNode(i, new Coordinate(x, y));
-            } catch (RouteException ignored) {} 
-        }
-
-        // 3. Generate Edges (Connect them randomly)
-        // Try to connect each node to 2-3 other nodes on average
-        for (int i = 0; i < size; i++) {
-            int connections = rand.nextInt(3) + 1; // 1 to 3 roads per node
-            for (int k = 0; k < connections; k++) {
-                int target = rand.nextInt(size);
-                if (i != target) {
-                    double dist = rand.nextDouble() * 15 + 1; // 1km to 16km
-                    double speed = rand.nextDouble() * 60 + 30; // 30km/h to 90km/h
-                    try {
-                        city.addEdge(i, target, dist, speed);
-                        edgesCount++;
-                    } catch (RouteException ignored) {}
-                }
-            }
-        }
-
-        // 4. Generate Random Tasks
-        int tasksCount = size / 2; // Create half as many tasks as nodes
-        for (int i = 0; i < tasksCount; i++) {
-            double tx = rand.nextDouble() * 100;
-            double ty = rand.nextDouble() * 100;
-            double load = rand.nextDouble() * 15 + 1; // 1kg to 16kg
-            spatialIndex.insertTask(new DeliveryTask(1000 + i, new Coordinate(tx, ty), 9, 17, load, 1));
-        }
-
-        System.out.println("Success! Created city with " + size + " nodes, " + edgesCount + " edges, and " + tasksCount + " tasks.");
-
-    } catch (Exception e) {
-        System.out.println("Error generating data: " + e.getMessage());
-    }
-}
-    
 }
