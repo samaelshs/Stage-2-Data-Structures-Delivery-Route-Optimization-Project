@@ -1,6 +1,9 @@
+Here is the Finalized User Guide, updated to include the "Populate Random Data" feature and the "View Map" feature.
+
+This document is ready to be included in your final submission or README.md.
+
 User Guide: Courier Delivery Route Optimizer
 1. Introduction Welcome to the Courier Route Optimizer! This application acts as a "digital dispatcher" for a delivery company. It helps you build a virtual map of a city, track delivery packages, and calculate the fastest routes for drivers using smart algorithms. It is designed to demonstrate Graph Data Structures and Pathfinding Algorithms in action.
-
 
 2. How to Start the App
 
@@ -22,9 +25,7 @@ Option 1: Run Assessment Demo
 
 Best for: Seeing a quick, automatic example of the system working without typing anything.
 
-
 What happens: The app runs a pre-scripted scenario required for the coursework assessment. It builds a tiny test city, assigns a package, and calculates one route automatically.
-
 
 Performance Test: It also runs a "speed test" to show how fast the algorithm can handle 100, 1,000, and 5,000 locations.
 
@@ -66,12 +67,23 @@ Action 5: Calculate Path (Run AI)
 
 Start Node / End Node: Enter the IDs of where the driver starts and ends.
 
-
 Result: The app uses Dijkstra’s Algorithm to calculate the fastest time to travel, considering the speed limits of the roads you built.
 
 Action 6: VIEW MAP STATUS
 
 What it does: Prints a text summary of your entire city. It lists every location (Node) and every road (Edge) connected to it. Use this if you forget which IDs you have created.
+
+Action 7: POPULATE RANDOM DATA
+
+What it does: Instantly builds a random city for testing.
+
+Input: You enter a number (e.g., 50).
+
+Result: The app clears any existing map and generates 50 random locations, connects them with random roads, and scatters random packages across the map. This is excellent for testing "Action 4" and "Action 5" without typing 50 commands manually.
+
+Action 8: Return to Main Menu
+
+Goes back to the starting screen.
 
 4. Troubleshooting / FAQ
 
@@ -81,4 +93,6 @@ What it does: Prints a text summary of your entire city. It lists every location
 
 "Driver Capacity Exceeded": You tried to assign a package that made the total weight go over 100kg. The driver refused it to stay safe.
 
-"Map is empty": You tried to View Map or Calculate Path before using Action 1 to build any nodes.
+"Map is empty": You tried to View Map or Calculate Path before using Action 1 (or Action 7) to build any nodes.
+
+Using Action 7: Warning! Using "Populate Random Data" will erase any map nodes you manually built in that session.
