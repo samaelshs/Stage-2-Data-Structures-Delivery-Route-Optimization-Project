@@ -1,7 +1,5 @@
 Here is the Finalized User Guide, updated to include the "Populate Random Data" feature and the "View Map" feature.
 
-This document is ready to be included in your final submission or README.md.
-
 User Guide: Courier Delivery Route Optimizer
 1. Introduction Welcome to the Courier Route Optimizer! This application acts as a "digital dispatcher" for a delivery company. It helps you build a virtual map of a city, track delivery packages, and calculate the fastest routes for drivers using smart algorithms. It is designed to demonstrate Graph Data Structures and Pathfinding Algorithms in action.
 
