@@ -3,6 +3,11 @@ import java.util.List;
 import java.util.InputMismatchException;
 import java.util.Random;
 
+/**
+ * Consolidated RouteOptimizerApp
+ * Includes hardcoded assessment scenarios, performance measurement, 
+ * and an enhanced interactive mode with random data population.
+ */
 public class RouteOptimizerApp {
 
     private static Scanner scanner = new Scanner(System.in);
@@ -14,7 +19,7 @@ public class RouteOptimizerApp {
 
     public static void main(String[] args) {
         System.out.println("=== CCS2110 Coursework: Courier Delivery Route Optimizer ===");
-        System.out.println("!!! I AM THE NEW VERSION WITH MAP VIEW !!!");
+        System.out.println("!!! I AM THE CONSOLIDATED VERSION WITH POPULATE & MAP VIEW !!!");
 
         boolean running = true;
         while (running) {
@@ -114,8 +119,9 @@ public class RouteOptimizerApp {
             System.out.println("3. Create Delivery Task");
             System.out.println("4. Assign Tasks (Spatial Search)");
             System.out.println("5. Calculate Path (Dijkstra)");
-            System.out.println("6. VIEW MAP STATUS"); // <--- NEW OPTION
-            System.out.println("7. Return to Main Menu");
+            System.out.println("6. VIEW MAP STATUS");
+            System.out.println("7. POPULATE RANDOM DATA");
+            System.out.println("8. Return to Main Menu");
             System.out.print("Select action: ");
 
             int choice = getIntInput();
@@ -165,14 +171,16 @@ public class RouteOptimizerApp {
                         else System.out.printf("Travel Time: %.4f hours%n", result);
                         break;
                     case 6:
-                        // Call the new method we just made
                         city.printGraphStatus();
                         break;
-
                     case 7:
+                        // Assuming RouteOptimizerTester logic is available via static call or helper
+                        populateRandomData(city, spatialIndex);
+                        System.out.println("Random data populated successfully.");
+                        break;
+                    case 8:
                         inMenu = false;
                         break;
-
                     default:
                         System.out.println("Unknown command.");
                 }
@@ -182,7 +190,20 @@ public class RouteOptimizerApp {
         }
     }
 
-    // --- INPUT HELPERS ---
+    // --- 4. HELPER METHODS ---
+    
+    /**
+     * Logic migrated from RouteOptimizerTester to fill the graph and index.
+     */
+    private static void populateRandomData(CityGraph g, SpatialADT s) throws RouteException {
+        Random r = new Random();
+        for (int i = 0; i < 10; i++) {
+            g.addNode(i, new Coordinate(r.nextDouble() * 50, r.nextDouble() * 50));
+            if (i > 0) g.addEdge(i - 1, i, r.nextDouble() * 10 + 1, 40.0);
+            s.insertTask(new DeliveryTask(200 + i, new Coordinate(r.nextDouble() * 50, r.nextDouble() * 50), 9, 18, 5, 1));
+        }
+    }
+
     private static int getIntInput() {
         while (true) {
             try { return scanner.nextInt(); }
@@ -190,7 +211,6 @@ public class RouteOptimizerApp {
                 scanner.next();
                 System.out.print("Invalid integer. Try again: ");
             } catch (Exception e) {
-                // Catches stream errors if run in non-interactive environments
                 System.out.println("Input stream error. Exiting.");
                 System.exit(1);
                 return -1;
