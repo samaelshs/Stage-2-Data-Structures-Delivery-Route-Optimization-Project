@@ -3,11 +3,7 @@ import java.util.List;
 import java.util.InputMismatchException;
 import java.util.Random;
 
-/**
- * Consolidated RouteOptimizerApp
- * Includes hardcoded assessment scenarios, performance measurement, 
- * and an enhanced interactive mode with random data population.
- */
+
 public class RouteOptimizerApp {
 
     private static Scanner scanner = new Scanner(System.in);
@@ -19,7 +15,6 @@ public class RouteOptimizerApp {
 
     public static void main(String[] args) {
         System.out.println("=== CCS2110 Coursework: Courier Delivery Route Optimizer ===");
-        System.out.println("!!! I AM THE CONSOLIDATED VERSION WITH POPULATE & MAP VIEW !!!");
 
         boolean running = true;
         while (running) {
@@ -228,3 +223,4 @@ public class RouteOptimizerApp {
         }
     }
 }
+
